@@ -1,17 +1,6 @@
-import {createStore} from 'redux'
+  
+import { createStore, applyMiddleware } from 'redux'
+import {postReducer} from './postReducer'
+import thunk from 'redux-thunk'
 
-const initialState = {
-    usercomment:""
-}
-
-const reducer = (state = initialState,action) => {
-    console.log("ACCIONES "+JSON.stringify(action))
-    if(action.type === "ADD_COMMENT"){
-            return {
-                usercomment: action.comm
-            }
-    }
-    return state
-}
-
-export default createStore(reducer)
+export const store = createStore(postReducer, applyMiddleware(thunk))

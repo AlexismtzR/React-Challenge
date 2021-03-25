@@ -1,12 +1,30 @@
 import React , {useState} from 'react';
-import { connect } from 'react-redux'
+import { useDispatch } from "react-redux";
+import { addComment } from "../redux/actions";
 import userimg from '../img/user.jpg'
+import Comment from './Comment'
+
 import "./style.css"
 
-const Post = ({title, body, comment, addcomment, usercomment}) => {
+const Post = ({title, body, comment, postId}) => {
 
     const [com, setCom] = useState(false)
     const [leavecomment, setleave] = useState("")
+    const dispatch = useDispatch();
+
+    const aComment = () => {
+        const min = 1;
+        const max = 100;
+        const rand = min + Math.random() * (max - min);
+        const comment = ({
+            "postId": postId,
+            "id": rand,
+            "name": "Carlos Alexis Martinez Rangel",
+            "email": "Alexis@alexis.com",
+            "body": leavecomment
+          })
+        dispatch(addComment(comment));
+      };
 
     return(
         <div className="post">
@@ -27,27 +45,12 @@ const Post = ({title, body, comment, addcomment, usercomment}) => {
                     {
                         comment.map((comment, key) => {
                             return(
-                                <div key={key}>
-                                <p>
-                                    <span style={{fontWeight:"500", marginRight:"8px"}}>{comment.name}:</span>
-                                    {comment.body}
-                                </p>
-                                <p>
-                                    <span style={{fontWeight:"500", marginRight:"4px"}}>Email:</span>
-                                    {comment.email}
-                                </p>
-                                 </div>   
+                                <Comment name={comment.name} body={comment.body} email={comment.email} key={key}/>
                             )   
                         })
                     }
-                    {
-                        usercomment ?                                 <p>
-                        <span style={{fontWeight:"500", marginRight:"8px"}}>User Comment Store on state/redux:</span>
-                        {usercomment}
-                    </p>:<></>
-                    }
                     <div style={{margin:"0px 16px"}}>
-                        <textarea name="create a post"
+                        <textarea name="Leave a comment"
                          rows="2" 
                          value={leavecomment} 
                          placeholder="Leave a comment" 
@@ -56,7 +59,7 @@ const Post = ({title, body, comment, addcomment, usercomment}) => {
                         </textarea>
                         <button
                         className="button"
-                        onClick={()=> addcomment(leavecomment)}
+                        onClick={()=> aComment()}
                         >
                         Comment
                         </button>                   
@@ -68,17 +71,4 @@ const Post = ({title, body, comment, addcomment, usercomment}) => {
     )
 }
 
-const mapStateToProps = state => ({
-    usercomment: state.usercomment
-})
-
-const mapDispatchToProps = dispatch => ({
-    addcomment(comm) {
-        dispatch({
-            type:"ADD_COMMENT",
-            comm
-        })
-    }
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Post);
+export default Post;

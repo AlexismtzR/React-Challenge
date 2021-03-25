@@ -1,20 +1,16 @@
 import React , {useState, useEffect} from 'react';
+import { useSelector, useDispatch } from "react-redux";
+import { loadComments, loadPosts } from '../redux/postReducer';
 import Post from './Post';
 
 const Social = () => {
-    const [posts, setPosts] = useState([])
-    const [comments, setComments] = useState([])
+    const posts = useSelector((state) => state.posts);
+    const comments = useSelector((state) => state.comments);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        const getPost = async (param) => {
-            const res = await fetch(`https://jsonplaceholder.typicode.com/${param}`)
-            const data = await res.json()
-            param == 'posts' ? setPosts(data) : setComments(data)
-        }
-        
-
-        getPost('posts')
-        getPost('comments')
+    dispatch(loadPosts())
+    dispatch(loadComments())
     },[])
 
     return(
@@ -23,7 +19,7 @@ const Social = () => {
                     var comment = comments.filter( comment => comment.postId === post.id)
                     return(
                         <div key={key} style={{display:"flex", flexDirection:"column", justifyContent:"center", margin:"5px", borderRadius:"8px"}}>
-                        <Post title={post.title} body={post.body} comment={comment}/>
+                        <Post title={post.title} body={post.body} postId={post.id} comment={comment}/>
                         </div>
                     )
                 })}
@@ -31,5 +27,6 @@ const Social = () => {
     )
 
 }
+
 
 export default Social;

@@ -1,9 +1,10 @@
-import Post from "./Components/Post"
-import Social from "./Components/Social"
+import Post from "./components/Post"
+import Social from "./components/Social"
 import { Provider } from 'react-redux'
-import store from "./redux/store"
+import {store} from "./redux/store"
 import React from 'react';
 import { shallow, mount } from 'enzyme';
+import Comment from './components/Comment'
 import toJson from "enzyme-to-json";
 
 const comments = [
@@ -41,10 +42,39 @@ const comments = [
 
 describe("rendering components", () => {
   it("renders Social component without crashing", () => {
-    shallow(<Social />);
+    shallow(<Provider store={store}><Social/></Provider>);
   });
   it("renders Post component without crashing", () => {
-    shallow(<Provider store={store}><Post title={"Title"} body={"body"} comment={comments}/></Provider>)
+    shallow(<Provider store={store}><Post/></Provider>)
+  });
+  it("renders Comment component without crashing", () => {
+    shallow(<Provider store={store}><Comment/></Provider>);
   });
 });
+
+describe("Comments Props", () => {
+  it("Check comments props", ()=> {
+    const wrapper = shallow(<Provider store={store}><Comment body={"Hello from body"} name={"Carlos"} email={"Test@test.com"}/></Provider>);
+    const prop = wrapper.props().children.props.body
+    const prop2 = wrapper.props().children.props.name
+    const prop3 = wrapper.props().children.props.email
+    expect(prop).toEqual('Hello from body');
+    expect(prop2).toEqual('Carlos');
+    expect(prop3).toEqual('Test@test.com');
+  })
+})
+
+describe("Post Props", () => {
+  it("Check Post props", ()=> {
+    const wrapper = shallow(<Provider store={store}><Post title={"test title"} body={"Lorem ipsum dolor sit amet."} comment={comments} postId={1}/></Provider>);
+    const prop = wrapper.props().children.props.title
+    const prop2 = wrapper.props().children.props.body
+    const prop3 = wrapper.props().children.props.comment
+    const prop4 = wrapper.props().children.props.postId
+    expect(prop).toEqual('test title');
+    expect(prop2).toEqual('Lorem ipsum dolor sit amet.');
+    expect(prop3).toEqual(comments);
+    expect(prop4).toEqual(1);
+  })
+})
 

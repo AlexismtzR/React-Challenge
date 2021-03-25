@@ -1,8 +1,8 @@
 import React from 'react'
 import './App.css';
 import { Provider } from 'react-redux'
-import store from './redux/store'
-import Social from './Components/Social';
+import {store} from './redux/store'
+import Social from './components/Social';
 
 function App() {
   return (
